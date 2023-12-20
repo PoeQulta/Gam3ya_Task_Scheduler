@@ -59,9 +59,10 @@ class QueueLvl
     }
     void Run()
     {
-        while(1)
+        int TaskDone;
+        int threadExit = 0;
+        while(TerminatedCount<NUM_PROC)
         {
-            int TaskDone;
             sem_wait(&full);
             sem_wait(&cpuMutex);
             process Temp = intQueue.front();
@@ -70,7 +71,6 @@ class QueueLvl
             if(nxtLvl == NULL)
             {
                 TaskDone = 1;
-                cout << "Task in FCFS" << endl;
             } 
             if(TaskDone)
             {
@@ -88,6 +88,7 @@ class QueueLvl
             }  
             usleep(sleepTime);
         }
+        terminate();
     }
 };
 
@@ -116,4 +117,5 @@ int main()
     thread_1.join();
     thread_2.join();
     thread_3.join();
+    sem_destroy(&cpuMutex);
 }
